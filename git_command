@@ -1,0 +1,64 @@
+#!/bin/bash
+
+#Script to run multiple commands on all repos in the root directory
+#Can run pull, fetch, status, and switch branch on all repos
+
+#Move into git repo root folder
+REPOPATH="/c/Users/nick.barr/Documents/git"
+cd $REPOPATH
+
+#Check which command is being requested
+for i in "$@"
+do
+	case $i in
+	-f|--fetch)
+		for dir in *;
+		do
+			cd ${dir}
+			echo -e "======================================"
+			echo -e "Fetching ${CYAN}${dir}${NOCOLOR}"
+			echo -e "======================================"
+			echo ""
+			git fetch
+			git status
+			echo ""
+			cd ..
+		done
+		;;
+
+	-p|--pull)
+		for dir in *;
+		do
+			cd ${dir}
+
+			branchname=$(git branch --show-current)
+
+			echo -e "====================================================================="
+			echo -e "Pulling ${CYAN}${dir}${NOCOLOR} on ${GREEN}$branchname${NOCOLOR}"
+			echo -e "====================================================================="
+			echo ""
+			git pull
+			echo ""
+			cd ..
+		done
+		;;
+	-b|--branch)
+		echo "Enter branch to checkout:"
+		read branch_name
+
+		for dir in *;
+		do
+			cd ${dir}
+			echo -e "==========================================================================="
+			echo -e "Switching to branch: ${GREEN}$branch_name${NOCOLOR} on ${CYAN}${dir}${NOCOLOR}"
+			echo -e "==========================================================================="
+			echo ""
+			git checkout $branch_name
+			echo ""
+			cd ..
+		done
+		;;
+	esac
+done
+echo "Done."
+cd
